@@ -40,7 +40,8 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 - Each developer agent should implement its task(s), coordinating with others as necessary and responding to reviewer feedback.
   - If a task uncovers more questions or required follow-up work that won't fit in the sprint, log it in FEEDBACK.md
   - For any major technical decisions, especially where there were multiple alternatives considered, capture a decision summary for the sprint review.
-- Do not count a task as done until it's been successfully validated by the reviewer.
+  - **Commit work atomically**: Create focused git commits as features/tasks are completed. Each commit should represent a logical unit of work.
+- Do not count a task as done until it's been successfully validated by the reviewer AND committed to git.
 
 ### 3c. Review and test all work (Reviewers)
 
@@ -49,6 +50,7 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
   - Capture screenshots, when relevant, to illustrate the features.
   - Focus on making the letter easy for a human to consume and understand, so that I can provide meaningful oversight and make the most of the delivered value.
 - When issues are found during testing, communicate with the dev agent responsible, asking for a fix.
+- **Verify commits**: Check that development work has been committed to git before marking tasks as complete. Request commits if missing.
 - Use sub-agents or Playwright scripts to minimize context impact for repeated testing.
 
 **Sprint Review Letter Format**
@@ -83,6 +85,8 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 
 - Verify that the sprint letter exists for the current sprint.
 - Confirm all agents report successful completion of tasks, or else have logged issues as FEEDBACK.
+- **Commit sprint artifacts**: Ensure the sprint letter, updated CHANGES.md, and updated BACKLOG.md are committed to git.
+- **Verify all work is committed**: Check git status to ensure no uncommitted development work remains.
 - Gather more information to clarify any unclear feedback items.
 - Spin down the team and get ready for the next sprint.
 

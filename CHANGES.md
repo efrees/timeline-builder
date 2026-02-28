@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Sprint 1 — 2026-02-28
+
+#### Added
+- TypeScript project infrastructure with Vite build system
+- Testing framework with Vitest (45 tests passing, 100% coverage on implemented code)
+- Core data model types: `TimePoint`, `TimeRange`, `Duration`, `Constraint`, `Event`, `Timeline`, `Theory`
+- Lexer/tokenizer for `.tl` files with support for:
+  - Event IDs, strings, numbers, dates (YYYY, YYYY-MM, YYYY-MM-DD)
+  - Keywords: `after`, `before`, `during`, `start-after`, `end-after`, etc.
+  - Time units: `years`, `months`, `days`
+  - Confidence levels: `[high]`, `[medium]`, `[low]`
+  - Group/theory markers: `#group`, `#theory`, `#tag`
+  - Frontmatter delimiters: `---`
+  - Symbols: `:`, `+`, `-`, `~`, `.`
+  - Line comments: `//`
+- Example `.tl` files: `basic.tl`, `jacob.tl`, `uncertain.tl`
+- CLI skeleton with `tl-parse` command (parser implementation pending)
+- Comprehensive test suite for data model and lexer (45 tests, all passing)
+
+#### Technical
+- ESLint and Prettier configured for code quality
+- Strict TypeScript configuration with full type safety
+- Vite configured for both CLI and library builds
+- Directory structure: `src/{parser,solver,visualizer,types,utils,cli}`, `tests/`, `examples/`
+
+## [Planning Phase]
+
 ### Planning Phase
 
 #### 2026-02-27 — Initial project setup
