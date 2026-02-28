@@ -863,7 +863,7 @@ eventA: Event A
     it('should provide line and column information in errors', () => {
       const input = `
 eventA: Event A
-  invalid: property
+  date: not-a-valid-date
       `;
       try {
         parse(input);
