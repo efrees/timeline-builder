@@ -330,12 +330,26 @@ export class Parser {
       }
     } else if (this.check(TokenType.DATE)) {
       // Date with month or day: 1920-05 or 1920-05-15
-      // OR year range: 1918-1922
+      // OR year range that was misparsed: 1918-19 (followed by 22 to make 1918-1922)
       const dateStr = this.advance().value;
-      const parsed = this.parseDate(dateStr);
-      minDate = parsed.min;
-      maxDate = parsed.max;
-      precision = parsed.precision;
+
+      // Check if this is actually a year range misparsed as a date
+      // e.g., "1918-19" followed by "22" should be year range 1918-1922
+      if (dateStr.match(/^\d{4}-\d{2}$/) && this.check(TokenType.NUMBER)) {
+        const startYear = parseInt(dateStr.slice(0, 4), 10);
+        const monthPart = dateStr.slice(5, 7);
+        const endYearSuffix = this.advance().value;
+        const endYear = parseInt(monthPart + endYearSuffix, 10);
+
+        minDate = { year: startYear };
+        maxDate = { year: endYear };
+        precision = 'year';
+      } else {
+        const parsed = this.parseDate(dateStr);
+        minDate = parsed.min;
+        maxDate = parsed.max;
+        precision = parsed.precision;
+      }
     } else {
       this.error('Expected date value');
     }
@@ -380,23 +394,12 @@ export class Parser {
     const parts = dateStr.split('-');
 
     if (parts.length === 2) {
-      // Could be YYYY-MM (year-month) or YYYY-YYYY (year range)
-      // Check if both parts are 4 digits (year range)
-      if (parts[0]!.length === 4 && parts[1]!.length === 4) {
-        // Year range: 1918-1922
-        return {
-          min: { year: parseInt(parts[0]!, 10) },
-          max: { year: parseInt(parts[1]!, 10) },
-          precision: 'year',
-        };
-      } else {
-        // Year-month: 1920-05
-        return {
-          min: { year: parseInt(parts[0]!, 10), month: parseInt(parts[1]!, 10) },
-          max: { year: parseInt(parts[0]!, 10), month: parseInt(parts[1]!, 10) },
-          precision: 'month',
-        };
-      }
+      // YYYY-MM
+      return {
+        min: { year: parseInt(parts[0]!, 10), month: parseInt(parts[1]!, 10) },
+        max: { year: parseInt(parts[0]!, 10), month: parseInt(parts[1]!, 10) },
+        precision: 'month',
+      };
     } else if (parts.length === 3) {
       // YYYY-MM-DD
       return {
@@ -436,31 +439,14 @@ export class Parser {
    */
   private parseDuration(): Duration {
     // Parse number or range
-    // The lexer might tokenize "13-15" as a DATE token instead of NUMBER-MINUS-NUMBER
-    let value: number | [number, number];
+    const numToken = this.consume(TokenType.NUMBER, 'Expected number');
+    let value: number | [number, number] = parseInt(numToken.value, 10);
 
-    if (this.check(TokenType.DATE)) {
-      // Range like "13-15" tokenized as DATE
-      const dateToken = this.advance();
-      const parts = dateToken.value.split('-');
-      if (parts.length === 2) {
-        value = [parseInt(parts[0]!, 10), parseInt(parts[1]!, 10)];
-      } else {
-        this.error('Invalid duration range format');
-      }
-    } else if (this.check(TokenType.NUMBER)) {
-      // Single number or NUMBER-MINUS-NUMBER
-      const numToken = this.advance();
-      value = parseInt(numToken.value, 10);
-
-      // Check for range (13 - 15)
-      if (this.check(TokenType.MINUS) && this.checkNext(TokenType.NUMBER)) {
-        this.advance(); // Skip minus
-        const endNum = parseInt(this.advance().value, 10);
-        value = [value as number, endNum];
-      }
-    } else {
-      this.error('Expected number for duration');
+    // Check for range (13-15)
+    if (this.check(TokenType.MINUS) && this.checkNext(TokenType.NUMBER)) {
+      this.advance(); // Skip minus
+      const endNum = parseInt(this.advance().value, 10);
+      value = [value as number, endNum];
     }
 
     // Parse unit
@@ -517,19 +503,8 @@ export class Parser {
     while (!this.check(TokenType.NEWLINE) && !this.isAtEnd()) {
       const token = this.advance();
 
-      // Add space before token if needed
-      // Don't add space if:
-      // - This is the first token
-      // - Last token was a colon
-      // - Current token is a colon
-      // - Current token is punctuation (UNKNOWN tokens like apostrophes)
-      // - Last token was punctuation
-      const noPunctuationTypes = [TokenType.COLON, TokenType.UNKNOWN];
-      const needsSpace = lastToken &&
-        !noPunctuationTypes.includes(lastToken.type) &&
-        !noPunctuationTypes.includes(token.type);
-
-      if (needsSpace) {
+      // Add space before token if needed (unless it's a colon or follows a colon)
+      if (lastToken && lastToken.type !== TokenType.COLON && token.type !== TokenType.COLON) {
         parts.push(' ');
       }
 

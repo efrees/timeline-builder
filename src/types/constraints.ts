@@ -2,12 +2,13 @@
  * Constraint types for timeline relationships
  */
 
-import { Duration } from './time.js';
+import { Duration, TimeRange } from './time.js';
 
 /**
  * Types of temporal constraints between events
  */
 export type ConstraintType =
+  | 'absolute' // Absolute date constraint (date: 1920)
   | 'after' // Start after target's end (default)
   | 'before' // End before target's start (default)
   | 'start-after' // Start after target's start
@@ -32,7 +33,7 @@ export type AnchorPoint = 'start' | 'end';
 export interface Constraint {
   /** Type of constraint */
   type: ConstraintType;
-  /** ID of the target event being referenced */
+  /** ID of the target event being referenced (empty for absolute constraints) */
   targetEventId: string;
   /** Optional duration offset (e.g., "+ 3 years") */
   duration?: Duration;
@@ -42,6 +43,8 @@ export interface Constraint {
   anchorPoint?: AnchorPoint;
   /** Theory this constraint belongs to (for alternative interpretations) */
   theoryId?: string;
+  /** Absolute time range (for absolute constraints only) */
+  absoluteRange?: TimeRange;
 }
 
 /**

@@ -10,5 +10,6 @@ export * from './types/index.js';
 
 // Export parser components
 export { Lexer } from './parser/lexer.js';
+export { Parser, ParseError, parse } from './parser/parser.js';
 export { TokenType } from './parser/tokens.js';
 export type { Token, Position } from './parser/tokens.js';

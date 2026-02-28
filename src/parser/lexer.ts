@@ -151,8 +151,8 @@ export class Lexer {
       return;
     }
 
-    // Strings (single or double quoted)
-    if (char === '"' || char === "'") {
+    // Strings (double quoted only - single quotes are treated as regular characters)
+    if (char === '"') {
       this.scanString(char);
       return;
     }
