@@ -39,7 +39,12 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 - Allocate each task to an agent, attempting to balance the workload and avoid conflicts in work.
 - Each developer agent should implement its task(s), coordinating with others as necessary and responding to reviewer feedback.
   - If a task uncovers more questions or required follow-up work that won't fit in the sprint, log it in FEEDBACK.md
-  - For any major technical decisions, especially where there were multiple alternatives considered, capture a decision summary for the sprint review.
+  - **Document technical decisions**: For any major technical decisions (architecture pivots, choosing between multiple approaches, design trade-offs), capture:
+    - What problem was being solved
+    - What options were considered
+    - Which option was chosen and why
+    - What the trade-offs are
+  - **Create ADRs for significant decisions**: If a decision has long-term architectural impact or involved substantial debate, create an Architecture Decision Record in `docs/adr/NNN-title.md`
   - **Commit work atomically**: Create focused git commits as features/tasks are completed. Each commit should represent a logical unit of work.
 - Do not count a task as done until it's been successfully validated by the reviewer AND committed to git.
 
@@ -48,9 +53,13 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 - One reviewer should create the sprint review letter, sequenced with the current sprint number, and add to it as each story is completed.
   - Write a short summary of each completed feature.
   - Capture screenshots, when relevant, to illustrate the features.
+  - **Document technical decisions**: Include a "Technical Decisions" section capturing major architectural choices made during the sprint. Reference any ADRs created.
+  - **Include challenges and solutions**: Document any significant bugs or issues encountered and how they were resolved.
   - Focus on making the letter easy for a human to consume and understand, so that I can provide meaningful oversight and make the most of the delivered value.
+  - **Use Sprint Letter 01 and 02 as templates** for the expected level of detail and structure.
 - When issues are found during testing, communicate with the dev agent responsible, asking for a fix.
 - **Verify commits**: Check that development work has been committed to git before marking tasks as complete. Request commits if missing.
+- **Verify ADRs**: If significant technical decisions were made, ensure they're documented either in the sprint letter or in `docs/adr/` ADR files.
 - Use sub-agents or Playwright scripts to minimize context impact for repeated testing.
 
 **Sprint Review Letter Format**
@@ -77,8 +86,34 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 
 ## Technical Decisions
 
-### ADR 1
-[Brief record of architectural decision, including alternatives considered and why a particular option was chosen]
+### TD-1: Decision Title
+
+**Context:** What problem needed to be solved?
+
+**Problem:** Specific issue or question
+
+**Options Considered:**
+1. Option A - pros/cons
+2. Option B - pros/cons
+
+**Decision:** Which option was chosen
+
+**Rationale:** Why this option was chosen
+
+**Impact:** What are the consequences (positive and negative)
+
+**Related ADRs:** Link to `docs/adr/NNN-title.md` if a full ADR was created
+
+## Challenges and Solutions
+
+### Challenge 1: Bug/Issue Title
+
+**Problem:** Description of the issue
+**Root Cause:** Why it happened
+**Solution:** How it was fixed
+**Developer:** Who fixed it
+**Commit:** Git commit hash
+**Result:** Outcome
 ```
 
 ### 4. Sprint cleanup (Leader)
