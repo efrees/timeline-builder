@@ -158,7 +158,7 @@ Each task includes:
 - Description: Parse simple events with absolute date constraints
 - Dependencies: P1.6
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 2, 2026-02-28)
 - Tasks:
   - Implement recursive descent parser structure
   - Parse event declaration: `eventId: Event description`
@@ -175,7 +175,7 @@ Each task includes:
 - Description: Parse relative constraints (after/before/during) without solving them
 - Dependencies: P1.8
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 2, 2026-02-28)
 - Tasks:
   - Parse `after: eventId + duration` syntax
   - Parse `before: eventId - duration` syntax
@@ -193,7 +193,7 @@ Each task includes:
 - Description: Parse tags, properties, sources, notes, confidence levels
 - Dependencies: P1.8
 - Size: S
-- Status: Not Started
+- Status: ✅ Completed (Sprint 2, 2026-02-28)
 - Tasks:
   - Parse tags: `tags: #family #travel`
   - Parse confidence levels on constraints: `after: X [high]`
@@ -208,18 +208,18 @@ Each task includes:
 - Description: Parse duration constraints on events
 - Dependencies: P1.8
 - Size: S
-- Status: Not Started
+- Status: ✅ Completed (Sprint 2, 2026-02-28)
 - Tasks:
   - Parse `duration: 5 years` syntax
   - Parse uncertain durations: `duration: 5-10 years`
   - Add duration to event data model
   - Write unit tests for duration parsing
 
-**P1.12: Implement parser for groups and sections**
-- Description: Parse hierarchical groups for organizing events
+**P1.12: Implement parser for groups and theories**
+- Description: Parse hierarchical groups for organizing events and theory blocks
 - Dependencies: P1.8
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 2, 2026-02-28)
 - Tasks:
   - Parse `#group GroupName` ... `#endgroup` blocks
   - Support nested groups

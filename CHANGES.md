@@ -6,6 +6,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Sprint 2 — 2026-02-28
+
+#### Added
+- Complete parser implementation for `.tl` timeline files
+  - Parser for basic events with absolute dates (P1.8)
+  - Parser for relative constraints (after/before/during with offsets) (P1.9)
+  - Parser for event properties (source, note, tags) (P1.10)
+  - Parser for duration constraints (P1.11)
+  - Parser for groups and theories (P1.12)
+- Comprehensive parser test suite (53 tests, 100% passing)
+- `Parser` class with recursive descent parsing
+- `ParseError` class with line/column information
+- `parse()` convenience function
+- Support for:
+  - Absolute dates: year, year-month, year-month-day formats
+  - Date ranges: `1918-1922`
+  - Approximate dates: `~1920`
+  - Confidence levels: `[high]`, `[medium]`, `[low]`
+  - Relative constraints with duration offsets: `after: eventA + 3 years`
+  - Uncertain durations: `after: eventA + 13-15 years`
+  - Approximate durations: `after: eventA + ~3 years`
+  - Explicit anchor points: `after: eventA.start`
+  - Multiple time units: years, months, days
+  - Event properties: source, note, tags
+  - Duration constraints: `duration: 5 years`
+  - Groups with nested events: `#group ... #endgroup`
+  - Theories for alternative interpretations: `#theory ... #endtheory`
+  - YAML frontmatter for timeline metadata
+
+#### Changed
+- Extended `ConstraintType` to include `'absolute'` for absolute date constraints
+- Added `absoluteRange` field to `Constraint` interface
+- Improved constraint type definitions to support both absolute and relative constraints
+
+#### Technical
+- Parser coverage: 93.32% (exceeds >80% target)
+- Property detection using keyword matching (more robust than indentation)
+- Text reconstruction for multi-word property values
+- Instance-based timeline state for simplified nested parsing
+
 ### Sprint 1 — 2026-02-28
 
 #### Added
