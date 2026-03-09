@@ -38,7 +38,7 @@ export class ConstraintGraph {
     this.predecessors = new Map();
 
     // Add all events
-    for (const [id, event] of timeline.events) {
+    for (const [, event] of timeline.events) {
       this.addEvent(event);
     }
   }
@@ -82,15 +82,19 @@ export class ConstraintGraph {
     }
 
     // Remove this event from successors of its predecessors
-    const preds = this.predecessors.get(eventId) || new Set();
-    for (const predId of preds) {
-      this.successors.get(predId)?.delete(eventId);
+    const preds = this.predecessors.get(eventId);
+    if (preds) {
+      Array.from(preds).forEach((predId) => {
+        this.successors.get(predId)?.delete(eventId);
+      });
     }
 
     // Remove this event from predecessors of its successors
-    const succs = this.successors.get(eventId) || new Set();
-    for (const succId of succs) {
-      this.predecessors.get(succId)?.delete(eventId);
+    const succs = this.successors.get(eventId);
+    if (succs) {
+      Array.from(succs).forEach((succId) => {
+        this.predecessors.get(succId)?.delete(eventId);
+      });
     }
 
     // Delete from all maps
@@ -135,7 +139,7 @@ export class ConstraintGraph {
 
     if (!sourceId) {
       // Find which event has this constraint
-      for (const [eventId, event] of this.events) {
+      for (const [eventId, event] of Array.from(this.events.entries())) {
         if (event.constraints.includes(constraint)) {
           sourceId = eventId;
           break;
@@ -178,9 +182,9 @@ export class ConstraintGraph {
 
   /**
    * Remove a constraint from the graph
-   * @param constraintId A unique identifier for the constraint (not implemented yet)
+   * @param _constraintId A unique identifier for the constraint (not implemented yet)
    */
-  removeConstraint(constraintId: string): void {
+  removeConstraint(_constraintId: string): void {
     // Note: Constraints don't have IDs in the current type system
     // This would require enhancing the Constraint type to include an id field
     // For now, this is a placeholder that doesn't do anything
@@ -249,7 +253,7 @@ export class ConstraintGraph {
     };
 
     // Filter events by theory
-    for (const [id, event] of this.events) {
+    for (const [id, event] of Array.from(this.events.entries())) {
       if (theoryId === undefined) {
         // Include events with no theory
         if (!event.theoryId) {
