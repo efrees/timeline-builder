@@ -10,7 +10,7 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 
 **ROADMAP.md** is a listing of triaged features and priorities that should drive sprint planning.
 **CHANGES.md** is a record of notable features and bugfixes to concisely track what has been completed.
-**docs/SPRINT_LETTER_{N}.md** (Example: docs/SPRINT_LETTER_04.md) are summaries of functionality and major technical decisions from each sprint, with screenshots, written for easy human review of the sprint.
+**docs/SPRINT*LETTER*{N}.md** (Example: docs/SPRINT_LETTER_04.md) are summaries of functionality and major technical decisions from each sprint, with screenshots, written for easy human review of the sprint.
 **FEEDBACK.md** is a place to collect feedback, especially during sprint review, to be triaged and
 
 ### 1. Review Corrections and Feedback from Last Sprint
@@ -59,7 +59,7 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
   - **Use Sprint Letter 01 and 02 as templates** for the expected level of detail and structure.
 - When issues are found during testing, communicate with the dev agent responsible, asking for a fix.
 - **Verify commits**: Check that development work has been committed to git before marking tasks as complete. Request commits if missing.
-- **Verify ADRs**: If significant technical decisions were made, ensure they're documented either in the sprint letter or in `docs/adr/` ADR files.
+- **Verify ADRs**: If significant technical decisions were made, ensure they're documented either in the sprint letter or in `docs/adr/` ADR files. ADR files should only be created for decisions big enough to impact future work or that are likely to be questioned.
 - Use sub-agents or Playwright scripts to minimize context impact for repeated testing.
 
 **Sprint Review Letter Format**
@@ -76,10 +76,10 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 ## Details
 
 ### Feature 1
-[Summary of feature 1 in 1-3 paragraphs, with screenshots, were applicable]
+[Summary of feature 1 in 1-3 paragraphs, with screenshots, where applicable]
 
 ### Feature 2
-[Summary of feature 2 in 1-3 paragraphs, with screenshots, were applicable]
+[Summary of feature 2 in 1-3 paragraphs, with screenshots, where applicable]
 
 ### Smaller Items
 [Briefly describe smaller features or bugfixes that would impact users]
@@ -102,7 +102,7 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 
 **Impact:** What are the consequences (positive and negative)
 
-**Related ADRs:** Link to `docs/adr/NNN-title.md` if a full ADR was created
+**Related ADRs:** Link to `docs/adr/NNN-title.md` if a full ADR was created. The sprint review letter can include a shorter summary if an ADR exists.
 
 ## Challenges and Solutions
 
@@ -124,4 +124,3 @@ Execute a full cycle of the sprint process defined below. You are the lead agent
 - **Verify all work is committed**: Check git status to ensure no uncommitted development work remains.
 - Gather more information to clarify any unclear feedback items.
 - Spin down the team and get ready for the next sprint.
-
