@@ -6,6 +6,53 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Sprint 3 — 2026-03-09
+
+#### Added
+- Comprehensive interval arithmetic library for constraint propagation (P2.1)
+  - Interval operations: `intersection`, `union`, `widen`, `narrow`
+  - Helper functions: `isEmpty`, `isPoint`, `width`
+  - Internal utilities for time conversion and duration handling
+  - Handles uncertain durations and approximate dates with margin
+- Time range comparison operations (P2.2)
+  - Comparison functions: `isBefore`, `isAfter`, `overlaps`, `contains`
+  - Proper handling of empty intervals and edge cases
+- Constraint graph data structure (P2.3)
+  - `ConstraintGraph` class for representing temporal dependencies
+  - Node operations: add/remove events, query by ID
+  - Edge operations: automatic constraint-to-edge conversion
+  - Query operations: predecessors, successors, constraints
+  - Theory filtering for alternative chronologies
+- Graph traversal algorithms (P2.4)
+  - Topological sort using Kahn's algorithm (for dependency ordering)
+  - Cycle detection using DFS (identifies circular dependencies)
+  - Connected components analysis (finds anchored/unanchored subgraphs)
+  - BFS and DFS traversal functions
+  - Error handling for invalid graph states
+- Test suites for solver infrastructure (105 new tests)
+  - 54 tests for interval arithmetic (100% statement coverage)
+  - 25 tests for constraint graph (89% statement coverage)
+  - 26 tests for graph algorithms (100% statement coverage)
+
+#### Changed
+- Interval arithmetic uses simplified day-based approximation
+  - 1 year = 365 days (no leap years)
+  - 1 month = 30 days (fixed length)
+  - Good enough for historical/archaeological timelines
+
+#### Fixed
+- Union operation adjacency detection (simplified from complex day-based logic to direct year comparison)
+- Overlaps function now correctly handles empty intervals (returns false)
+- Cycle detection in graph algorithms (now correctly identifies and returns cycle paths)
+- Topological sort error handling (now throws on cycles as expected)
+
+#### Technical
+- Solver coverage: 96.20% (exceeds >80% target)
+- Edge direction convention: B after A → edge B → A (dependent → dependency)
+- All commits include Co-Authored-By tags
+- Clean separation: three independent modules (interval, graph, algorithms)
+- Complete constraint solver foundation ready for propagation algorithms
+
 ### Sprint 2 — 2026-02-28
 
 #### Added

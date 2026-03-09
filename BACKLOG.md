@@ -373,7 +373,7 @@ Each task includes:
 - Description: Build full interval arithmetic library for time ranges
 - Dependencies: P1.5
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 3, 2026-03-09)
 - Tasks:
   - Implement intersection of intervals: `A ∩ B`
   - Implement union of intervals: `A ∪ B`
@@ -388,7 +388,7 @@ Each task includes:
 - Description: Define ordering and comparison operations for time ranges
 - Dependencies: P2.1
 - Size: S
-- Status: Not Started
+- Status: ✅ Completed (Sprint 3, 2026-03-09)
 - Tasks:
   - Implement `isBefore(A, B)`: true if A.max < B.min
   - Implement `isAfter(A, B)`: true if A.min > B.max
@@ -403,7 +403,7 @@ Each task includes:
 - Description: Represent events and constraints as a directed graph
 - Dependencies: P1.4
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 3, 2026-03-09)
 - Tasks:
   - Create `ConstraintGraph` class
   - Represent events as nodes
@@ -417,7 +417,7 @@ Each task includes:
 - Description: Utility functions for traversing and analyzing the constraint graph
 - Dependencies: P2.3
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 3, 2026-03-09)
 - Tasks:
   - Implement topological sort (for processing events in dependency order)
   - Implement cycle detection (detect circular dependencies)
