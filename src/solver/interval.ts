@@ -114,19 +114,13 @@ export function union(a: TimeRange, b: TimeRange): TimeRange | TimeRange[] {
   const bMinDays = timePointToNumber(b.min);
   const bMaxDays = timePointToNumber(b.max);
 
-  // Check if intervals overlap or are adjacent
+  // Check if intervals overlap
   const overlap = !(aMaxDays < bMinDays || bMaxDays < aMinDays);
-  // Adjacent means they touch at boundaries: a ends where b starts or vice versa
-  // Years 100-150 and 151-200 are adjacent at the year boundary (150/151)
-  // In our day-based system, year 150 ends at day 150*365+364, year 151 starts at day 151*365
-  // So they're adjacent if there's approximately a year gap (or less) at the boundary
-  const aEndYear = Math.floor(aMaxDays / 365);
-  const bStartYear = Math.floor(bMinDays / 365);
-  const bEndYear = Math.floor(bMaxDays / 365);
-  const aStartYear = Math.floor(aMinDays / 365);
 
-  const adjacent = (aEndYear + 1 >= bStartYear && aEndYear + 1 <= bStartYear + 1) ||
-                   (bEndYear + 1 >= aStartYear && bEndYear + 1 <= aStartYear + 1);
+  // Check if intervals are adjacent (one ends where the other begins)
+  // For year-based intervals, year 150 (day 54750) ends and year 151 (day 55115) begins
+  // They are adjacent if a.max.year + 1 === b.min.year or b.max.year + 1 === a.min.year
+  const adjacent = (a.max.year + 1 === b.min.year) || (b.max.year + 1 === a.min.year);
 
   if (overlap || adjacent) {
     // Merge into single interval
