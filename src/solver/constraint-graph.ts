@@ -37,9 +37,19 @@ export class ConstraintGraph {
     this.successors = new Map();
     this.predecessors = new Map();
 
-    // Add all events
+    // First pass: Add all events (without processing constraints)
     for (const [, event] of timeline.events) {
-      this.addEvent(event);
+      this.events.set(event.id, event);
+      this.constraints.set(event.id, []);
+      this.successors.set(event.id, new Set());
+      this.predecessors.set(event.id, new Set());
+    }
+
+    // Second pass: Process all constraints (now all events exist)
+    for (const [, event] of timeline.events) {
+      for (const constraint of event.constraints) {
+        this.addConstraint(constraint, event.id);
+      }
     }
   }
 
