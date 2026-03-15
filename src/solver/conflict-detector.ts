@@ -73,6 +73,8 @@ function createCycleConflict(cycle: string[], graph: ConstraintGraph): Conflict 
     const eventId = cycle[i];
     const nextEventId = cycle[(i + 1) % cycle.length];
 
+    if (!eventId || !nextEventId) continue;
+
     const event = graph.getEvent(eventId);
     if (event) {
       const constraintToNext = event.constraints.find(
@@ -100,7 +102,7 @@ function createCycleConflict(cycle: string[], graph: ConstraintGraph): Conflict 
  */
 function createEmptyIntervalConflict(
   eventId: string,
-  range: TimeRange,
+  _range: TimeRange,
   graph: ConstraintGraph
 ): Conflict | null {
   const event = graph.getEvent(eventId);
@@ -142,7 +144,11 @@ function detectDirectConflicts(
         let hasConflict = false;
         for (let i = 0; i < ranges.length - 1; i++) {
           for (let j = i + 1; j < ranges.length; j++) {
-            const overlap = rangesOverlap(ranges[i], ranges[j]);
+            const rangeI = ranges[i];
+            const rangeJ = ranges[j];
+            if (!rangeI || !rangeJ) continue;
+
+            const overlap = rangesOverlap(rangeI, rangeJ);
             if (!overlap) {
               hasConflict = true;
               break;
@@ -265,7 +271,7 @@ export function traceConflictChain(
 /**
  * Suggest resolutions for a conflict based on confidence levels
  */
-export function suggestResolution(conflict: Conflict, graph: ConstraintGraph): string[] {
+export function suggestResolution(conflict: Conflict, _graph: ConstraintGraph): string[] {
   const suggestions: string[] = [];
 
   // Sort constraints by confidence level (low confidence first)
@@ -287,9 +293,11 @@ export function suggestResolution(conflict: Conflict, graph: ConstraintGraph): s
   // For cycles, suggest breaking at the weakest link
   if (conflict.type === 'circular-dependency' && constraintsByConfidence.length > 0) {
     const weakest = constraintsByConfidence[0];
-    suggestions.push(
-      `To break the cycle, consider removing the ${weakest.type} constraint with ${weakest.confidence} confidence.`
-    );
+    if (weakest) {
+      suggestions.push(
+        `To break the cycle, consider removing the ${weakest.type} constraint with ${weakest.confidence} confidence.`
+      );
+    }
   }
 
   // For impossible ranges, suggest checking the source

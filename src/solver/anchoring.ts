@@ -91,12 +91,14 @@ export function analyzeComponents(graph: ConstraintGraph): ComponentInfo[] {
 
     const isAnchored = componentAnchors.length > 0;
 
-    return {
+    const result: ComponentInfo = {
       eventIds,
       isAnchored,
       anchors: componentAnchors,
-      referenceEventId: isAnchored ? undefined : eventIds[0], // Use first event as reference if unanchored
+      referenceEventId: !isAnchored ? eventIds[0] : undefined,
     };
+
+    return result;
   });
 }
 
@@ -106,7 +108,7 @@ export function analyzeComponents(graph: ConstraintGraph): ComponentInfo[] {
  */
 export function chooseReferenceEvent(
   component: ComponentInfo,
-  graph: ConstraintGraph,
+  _graph: ConstraintGraph,
   metadata: Metadata
 ): string {
   // Check if metadata specifies a reference
@@ -115,7 +117,11 @@ export function chooseReferenceEvent(
   }
 
   // Otherwise, use the first event in the component
-  return component.eventIds[0];
+  const firstEvent = component.eventIds[0];
+  if (!firstEvent) {
+    throw new Error('Component has no events');
+  }
+  return firstEvent;
 }
 
 /**
@@ -196,15 +202,23 @@ export function toRelativeTime(
     // Convert to relative years
     const relativeMin: TimePoint = {
       year: range.min.year - referenceYear,
-      month: range.min.month,
-      day: range.min.day,
     };
+    if (range.min.month !== undefined) {
+      relativeMin.month = range.min.month;
+    }
+    if (range.min.day !== undefined) {
+      relativeMin.day = range.min.day;
+    }
 
     const relativeMax: TimePoint = {
       year: range.max.year - referenceYear,
-      month: range.max.month,
-      day: range.max.day,
     };
+    if (range.max.month !== undefined) {
+      relativeMax.month = range.max.month;
+    }
+    if (range.max.day !== undefined) {
+      relativeMax.day = range.max.day;
+    }
 
     relativeRanges.set(eventId, {
       min: relativeMin,

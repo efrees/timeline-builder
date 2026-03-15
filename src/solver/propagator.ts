@@ -4,7 +4,7 @@
  */
 
 import type { TimeRange, Duration, TimePoint } from '../types/time.js';
-import type { Constraint, ConstraintType } from '../types/constraints.js';
+import type { Constraint } from '../types/constraints.js';
 import type { Event } from '../types/timeline.js';
 import { ConstraintGraph } from './constraint-graph.js';
 import { topologicalSort } from './graph-algorithms.js';
@@ -50,11 +50,17 @@ function daysToTimePoint(days: number, precision: 'year' | 'month' | 'day'): Tim
   const month = Math.floor(remainder / 30) + 1;
   const day = Math.floor(remainder % 30) + 1;
 
-  return {
-    year,
-    month: precision !== 'year' ? Math.max(1, Math.min(12, month)) : undefined,
-    day: precision === 'day' ? Math.max(1, Math.min(31, day)) : undefined,
-  };
+  const result: TimePoint = { year };
+
+  if (precision !== 'year') {
+    result.month = Math.max(1, Math.min(12, month));
+  }
+
+  if (precision === 'day') {
+    result.day = Math.max(1, Math.min(31, day));
+  }
+
+  return result;
 }
 
 /**
@@ -282,7 +288,7 @@ function applyDurationConstraint(range: TimeRange, event: Event): TimeRange | nu
     return range;
   }
 
-  const [durationMin, durationMax] = durationToDays(event.durationConstraint.duration);
+  const [, durationMax] = durationToDays(event.durationConstraint.duration);
 
   // Duration constraint: max = min + duration
   const minDays = timePointToDays(range.min);

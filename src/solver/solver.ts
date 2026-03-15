@@ -81,10 +81,13 @@ export class Solver {
     warnings.push(...anchoring.warnings);
 
     // Step 3: Run constraint propagation
-    const propagationOptions: PropagationOptions = {
-      maxIterations: options.maxIterations,
-      theoryId: options.theoryId,
-    };
+    const propagationOptions: PropagationOptions = {};
+    if (options.maxIterations !== undefined) {
+      propagationOptions.maxIterations = options.maxIterations;
+    }
+    if (options.theoryId !== undefined) {
+      propagationOptions.theoryId = options.theoryId;
+    }
     const propagation = propagate(graph, propagationOptions);
     warnings.push(...propagation.warnings);
 
@@ -119,7 +122,7 @@ export class Solver {
     }
 
     // Filter timeline for specific theory
-    const filteredEvents = new Map<string, Event>();
+    const filteredEvents = new Map();
 
     for (const [id, event] of timeline.events) {
       // Skip events from other theories if theory filtering is enabled
@@ -128,22 +131,24 @@ export class Solver {
       }
 
       // Filter constraints by theory
-      const filteredEvent: Event = {
+      const filteredConstraints = event.constraints.filter(
+        (c: any) => !c.theoryId || c.theoryId === theoryId
+      );
+
+      const filteredEvent = {
         ...event,
-        constraints: event.constraints.filter(
-          (c) => !c.theoryId || c.theoryId === theoryId
-        ),
+        constraints: filteredConstraints,
       };
 
       filteredEvents.set(id, filteredEvent);
     }
 
     // Create filtered timeline
-    const filteredTimeline: Timeline = {
+    const filteredTimeline = {
       ...timeline,
       events: filteredEvents,
     };
 
-    return new ConstraintGraph(filteredTimeline);
+    return new ConstraintGraph(filteredTimeline as Timeline);
   }
 }
