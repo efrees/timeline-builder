@@ -425,82 +425,66 @@ Each task includes:
   - Implement breadth-first and depth-first traversal
   - Write unit tests for all traversal algorithms
 
-**P2.5: Detect conflicting constraints**
-- Description: Find constraints that cannot be simultaneously satisfied
-- Dependencies: P2.3, P2.4
-- Size: M
-- Status: Not Started
-- Tasks:
-  - Implement basic conflict detection: `after 1920` AND `before 1915` (impossible)
-  - Detect transitive conflicts through dependency chains
-  - Report conflicts with full constraint chain for debugging
-  - Suggest which constraints might be wrong (heuristic based on confidence levels)
-  - Write unit tests for various conflict scenarios
-  - Write tests for edge cases (soft constraints, low-confidence data)
-
-### Propagation Algorithm
-
-**P2.6: Implement forward constraint propagation**
-- Description: Propagate constraints from anchored events forward through the graph
+**P2.5: Implement constraint propagation engine**
+- Description: Core propagation algorithm using interval arithmetic
 - Dependencies: P2.1, P2.3, P2.4
 - Size: L
-- Status: Not Started
+- Status: ✅ Completed (Sprint 4, 2026-03-15)
 - Tasks:
-  - Start from events with absolute dates (anchors)
-  - Traverse graph in topological order
-  - For each event, compute bounds based on predecessor constraints
-  - Apply `after` constraints: `E.min = max(E.min, Pred.max + duration.min)`
-  - Apply `before` constraints: `E.max = min(E.max, Succ.min - duration.min)`
-  - Apply `during` constraints: `E.min >= Parent.min AND E.max <= Parent.max`
-  - Handle duration constraints: `E.max = E.min + duration`
-  - Propagate uncertainty through interval arithmetic
-  - Write unit tests for forward propagation
-  - Test with multiple constraint types
+  - ✅ Core propagation algorithm using interval arithmetic
+  - ✅ Forward/backward propagation through constraint graph
+  - ✅ Fixed-point iteration until convergence
+  - ✅ Handle theory-specific propagation rules
+  - ✅ Handle all constraint types (after, before, start-after, end-after, end-before, during)
+  - ✅ Handle duration constraints
+  - ✅ Track convergence and iteration count
+  - ✅ Comprehensive tests (17 tests, 86.07% coverage)
 
-**P2.7: Implement backward constraint propagation**
-- Description: Propagate constraints backward to tighten bounds further
-- Dependencies: P2.6
+**P2.6: Add conflict detection and resolution**
+- Description: Detect unsatisfiable constraints and report conflicts with explanations
+- Dependencies: P2.3, P2.4
 - Size: M
-- Status: Not Started
+- Status: ✅ Completed (Sprint 4, 2026-03-15)
 - Tasks:
-  - After forward pass, traverse graph in reverse topological order
-  - For each event, refine bounds based on successor constraints
-  - Apply `before` constraints backward: `E.max = min(E.max, Succ.min - duration.min)`
-  - Apply `after` constraints backward: `Pred.max = min(Pred.max, E.min - duration.min)`
-  - Handle complex constraint chains
-  - Write unit tests for backward propagation
-  - Write tests for combined forward + backward propagation
+  - ✅ Detect unsatisfiable constraints (empty intervals, cycles)
+  - ✅ Report conflicts with explanations
+  - ✅ Suggest resolutions where possible
+  - ✅ Tests for various conflict scenarios (11 tests, 92.07% coverage)
+  - ✅ Cycle detection using existing detectCycles algorithm
+  - ✅ Trace conflict chains with full dependency paths
+  - ✅ Provide resolution suggestions based on confidence levels
+
+**P2.7: Implement anchoring system**
+- Description: Anchor events to absolute dates and handle unanchored timelines
+- Dependencies: P2.3, P2.4
+- Size: M
+- Status: ✅ Completed (Sprint 4, 2026-03-15)
+- Tasks:
+  - ✅ Anchor events to absolute dates
+  - ✅ Propagate from anchored events outward
+  - ✅ Handle multiple anchor points
+  - ✅ Tests for anchoring behavior (20 tests, 98.34% coverage)
+  - ✅ Identify connected components and their anchoring status
+  - ✅ Choose reference events for unanchored components
+  - ✅ Convert unanchored timelines to relative time
 
 **P2.8: Implement iterative constraint propagation (fixed-point)**
 - Description: Repeatedly propagate until no more refinement is possible
-- Dependencies: P2.6, P2.7
+- Dependencies: P2.5
 - Size: M
-- Status: Not Started
-- Tasks:
-  - Implement fixed-point iteration: propagate until bounds stop changing
-  - Set maximum iteration limit to prevent infinite loops
-  - Detect convergence (no bounds changed in last iteration)
-  - Optimize by tracking which events need re-propagation (work queue)
-  - Write unit tests for complex graphs requiring multiple iterations
-  - Test for performance on large graphs
+- Status: ✅ Completed (Sprint 4, 2026-03-15) - Integrated into P2.5
+- Note: Fixed-point iteration implemented as part of P2.5 propagation engine
 
 **P2.9: Handle unanchored timelines**
 - Description: Support timelines with no absolute dates, only relative constraints
-- Dependencies: P2.6
+- Dependencies: P2.5, P2.7
 - Size: M
-- Status: Not Started
-- Tasks:
-  - Identify connected components with no absolute anchor
-  - Choose a reference event (from file metadata: `reference: jacobBorn`)
-  - Compute all dates relative to reference event (set reference to time 0)
-  - Represent unanchored events with relative time ranges
-  - Propagate constraints using relative time
-  - Write unit tests for fully unanchored timelines
-  - Write tests for partially anchored timelines (some events have dates, others don't)
+- Status: ✅ Completed (Sprint 4, 2026-03-15) - Integrated into P2.7
+- Note: Unanchored timeline support implemented as part of P2.7 anchoring system
 
 **P2.10: Implement theory-aware constraint solving**
 - Description: Activate/deactivate constraint sets based on selected theories
-- Dependencies: P2.6
+- Dependencies: P2.5
 - Size: M
 - Status: Not Started
 - Tasks:

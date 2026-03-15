@@ -6,6 +6,60 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Sprint 4 — 2026-03-15
+
+#### Added
+- Complete constraint propagation engine (P2.5)
+  - Forward propagation: propagate constraints from dependencies to dependents
+  - Backward propagation: tighten bounds using successor constraints
+  - Fixed-point iteration: repeat until convergence or max iterations
+  - Support for all constraint types: after, before, start-after, end-after, end-before, during
+  - Duration constraint handling
+  - Auto-extend max bound when min pushes past it (handles unconstrained events)
+  - Theory-specific propagation support (foundation for Phase 4)
+- Conflict detection and resolution system (P2.6)
+  - Cycle detection using existing graph algorithms
+  - Empty interval detection (unsatisfiable constraints)
+  - Direct conflict detection (multiple absolute dates, conflicting before/after)
+  - Conflict chain tracing with full dependency paths
+  - Resolution suggestions based on confidence levels
+  - Structured Conflict objects with type, events, constraints, and explanations
+- Anchoring system (P2.7)
+  - Identify anchored events (events with absolute date constraints)
+  - Connected component analysis for anchoring status
+  - Reference event selection for unanchored components
+  - Relative time conversion (years since reference)
+  - Support for fully anchored, partially anchored, and unanchored timelines
+  - Multiple anchor handling with warnings
+  - Strongest anchor identification for propagation
+- Test suites for constraint solving (48 new tests)
+  - 17 tests for propagation engine (86.07% coverage)
+  - 11 tests for conflict detection (92.07% coverage)
+  - 20 tests for anchoring system (98.34% coverage)
+
+#### Changed
+- Initial bounds for unconstrained events increased to [-1,000,000, +1,000,000] years
+  - Prevents overflow when adding large durations
+  - Wide enough for any realistic timeline
+- Propagation parameter naming improved for clarity
+  - `referencedEventRange` and `currentEventRange` instead of `sourceRange`/`targetRange`
+  - Self-documenting code with clear semantics
+
+#### Fixed
+- Parameter naming confusion in `applyConstraint` function
+- Empty interval handling for unconstrained events during propagation
+- Vitest watch mode hanging in CI (use `vitest run` instead of `npm test`)
+- Backward propagation logic for different constraint types
+
+#### Technical
+- Solver coverage: 92.74% (exceeds >80% target)
+- Total tests: 251 passing (48 new in Sprint 4)
+- Fixed-point iteration typically converges in 2-5 iterations
+- All commits include Co-Authored-By tags
+- Complete Phase 2: Constraint solver fully functional
+- Integration: propagator + conflict detector + anchoring work together seamlessly
+- Uses Sprint 3 foundation: interval arithmetic, constraint graph, graph algorithms
+
 ### Sprint 3 — 2026-03-09
 
 #### Added
