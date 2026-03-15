@@ -12,23 +12,27 @@ The `constraint-demo.tl` file demonstrates how the constraint solver propagates 
 ## Expected Behavior
 
 Given the constraints:
-- Grandfather: 1920-1925 (absolute)
-- Father: after grandfather + 25 years, before grandfather + 40 years
-- Myself: after father + 20 years, before father + 35 years
-- Sister: after myself + 2 years, before myself + 5 years
+- Grandfather: 1920-1925 (absolute date range)
+- Father: after grandfather + 25 years AND date: 1945-1965
+- Myself: after father + 20 years AND date: 1970-2000
+- Sister: after myself + 2 years AND date: 1980-2010
 
-The solver should compute:
+The solver computes (by intersecting constraints):
 - Grandfather: 1920-1925 (given)
-- Father: 1945-1965 (grandfather.max + 25 to grandfather.max + 40)
-- Myself: 1965-2000 (father.min + 20 to father.max + 35)
-- Sister: 1967-2005 (myself.min + 2 to myself.max + 5)
+- Father: 1950-1965 (min from "after" = 1950, max from absolute = 1965)
+- Myself: 1985-2000 (min from "after" = 1985, max from absolute = 2000)
+- Sister: 2002-2010 (min from "after" = 2002, max from absolute = 2010)
 
-## Known Issues (Sprint 5)
+## How It Works
 
-The backward propagation isn't fully working yet:
-- "before" constraints don't properly narrow the max bound
-- Events show very large max values (1000000) instead of computed bounds
-- This will be fixed in a future sprint with improved propagation
+The solver demonstrates **constraint intersection**:
+1. Each event can have multiple constraints (relative AND absolute)
+2. "after" constraints set the minimum bound based on predecessor
+3. Absolute date ranges constrain both min and max
+4. The solver narrows ranges by intersecting all constraints
+5. Fixed-point iteration propagates changes through the chain
+
+This shows the power of combining different constraint types!
 
 ## Output Format
 

@@ -8,12 +8,12 @@ grandfather: Grandfather born
 
 father: Father born
   after: grandfather + 25 years
-  before: grandfather + 40 years
+  date: 1945-1965
 
 myself: My birth
   after: father + 20 years
-  before: father + 35 years
+  date: 1970-2000
 
 sister: Sister born
   after: myself + 2 years
-  before: myself + 5 years
+  date: 1980-2010
