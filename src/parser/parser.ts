@@ -16,14 +16,11 @@ import {
   Constraint,
   ConstraintType,
   ConfidenceLevel,
-  DurationConstraint,
   AnchorPoint,
 } from '../types/constraints.js';
 import {
   TimePoint,
-  TimeRange,
   Duration,
-  Era,
   Precision,
   TimeUnit,
 } from '../types/time.js';
@@ -170,8 +167,10 @@ export class Parser {
       id: nameToken.value,
       name: nameToken.value,
       eventIds: new Set(),
-      parentGroupId,
     };
+    if (parentGroupId !== undefined) {
+      group.parentGroupId = parentGroupId;
+    }
 
     this.skipNewlines();
 
@@ -308,7 +307,7 @@ export class Parser {
     this.consume(TokenType.COLON, 'Expected : after date');
 
     // Check for approximate marker (~)
-    const approximate = this.match(TokenType.TILDE);
+    this.match(TokenType.TILDE); // TODO: Use approximate in constraint
 
     // Parse date value
     let minDate: TimePoint;
@@ -644,10 +643,16 @@ export class Parser {
     const constraint: Constraint = {
       type: constraintType,
       targetEventId,
-      duration,
       confidence,
-      anchorPoint,
     };
+
+    if (duration !== undefined) {
+      constraint.duration = duration;
+    }
+
+    if (anchorPoint !== undefined) {
+      constraint.anchorPoint = anchorPoint;
+    }
 
     event.constraints.push(constraint);
   }

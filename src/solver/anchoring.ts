@@ -95,8 +95,11 @@ export function analyzeComponents(graph: ConstraintGraph): ComponentInfo[] {
       eventIds,
       isAnchored,
       anchors: componentAnchors,
-      referenceEventId: !isAnchored ? eventIds[0] : undefined,
     };
+
+    if (!isAnchored && eventIds[0]) {
+      result.referenceEventId = eventIds[0];
+    }
 
     return result;
   });

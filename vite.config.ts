@@ -11,7 +11,7 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['commander'],
+      external: ['commander', 'fs'],
     },
   },
   test: {
