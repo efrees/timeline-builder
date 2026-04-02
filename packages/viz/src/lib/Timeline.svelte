@@ -113,6 +113,12 @@
     tooltipVisible = false;
     tooltipEvent = null;
   }
+
+  // Label truncation helper
+  function truncateLabel(text: string, maxLength: number): string {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '…';
+  }
 </script>
 
 <div class="timeline-container">
@@ -168,28 +174,30 @@
               on:mouseleave={handleMouseLeave}
             />
 
-            <!-- Event label -->
+            <!-- Event ID label (above bar) -->
             <text
               x={eventWidth / 2}
               y="-8"
               text-anchor="middle"
-              font-size="12"
+              font-size="11"
+              font-family="monospace"
+              font-weight="600"
               fill="currentColor"
-              class="event-label"
+              class="event-id-label"
             >
-              {event.description}
+              {truncateLabel(event.id, 18)}
             </text>
 
-            <!-- Date range label -->
+            <!-- Event description label (below bar) -->
             <text
               x={eventWidth / 2}
               y="35"
               text-anchor="middle"
               font-size="10"
-              fill="gray"
-              class="date-label"
+              fill="currentColor"
+              class="event-description-label"
             >
-              {event.computedRange.formatted}
+              {truncateLabel(event.description, 25)}
             </text>
           </g>
         {/each}
@@ -260,14 +268,15 @@
     opacity: 0.8;
   }
 
-  .event-label {
+  .event-id-label {
     pointer-events: none;
     user-select: none;
   }
 
-  .date-label {
+  .event-description-label {
     pointer-events: none;
     user-select: none;
+    opacity: 0.7;
   }
 
   @media (prefers-color-scheme: dark) {
