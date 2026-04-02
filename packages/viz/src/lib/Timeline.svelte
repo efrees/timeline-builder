@@ -1,10 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
-  import type { TimelineData } from './types';
+  import type { TimelineData, TimelineEvent } from './types';
   import { timePointToYear } from './timeUtils';
+  import Tooltip from './Tooltip.svelte';
 
   export let data: TimelineData;
+
+  // Tooltip state
+  let tooltipEvent: TimelineEvent | null = null;
+  let tooltipX = 0;
+  let tooltipY = 0;
+  let tooltipVisible = false;
 
   let svgElement: SVGSVGElement;
   let width = 1000;
@@ -86,6 +93,26 @@
     const width = transformedXScale(maxYear) - transformedXScale(minYear);
     return Math.max(width, 3); // Minimum 3px width for visibility
   }
+
+  // Tooltip handlers
+  function handleMouseEnter(event: TimelineEvent, mouseEvent: MouseEvent) {
+    tooltipEvent = event;
+    tooltipX = mouseEvent.clientX;
+    tooltipY = mouseEvent.clientY;
+    tooltipVisible = true;
+  }
+
+  function handleMouseMove(mouseEvent: MouseEvent) {
+    if (tooltipVisible) {
+      tooltipX = mouseEvent.clientX;
+      tooltipY = mouseEvent.clientY;
+    }
+  }
+
+  function handleMouseLeave() {
+    tooltipVisible = false;
+    tooltipEvent = null;
+  }
 </script>
 
 <div class="timeline-container">
@@ -133,6 +160,12 @@
               fill={event.isAnchored ? '#3b82f6' : '#94a3b8'}
               rx="3"
               class="event-bar"
+              role="button"
+              tabindex="0"
+              aria-label="Event: {event.description}"
+              on:mouseenter={(e) => handleMouseEnter(event, e)}
+              on:mousemove={handleMouseMove}
+              on:mouseleave={handleMouseLeave}
             />
 
             <!-- Event label -->
@@ -183,6 +216,13 @@
     </div>
   </div>
 </div>
+
+<Tooltip
+  event={tooltipEvent}
+  x={tooltipX}
+  y={tooltipY}
+  visible={tooltipVisible}
+/>
 
 <style>
   .timeline-container {
