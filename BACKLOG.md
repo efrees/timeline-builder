@@ -673,28 +673,28 @@ Each task includes:
 - Description: Display event names and descriptions on timeline
 - Dependencies: P3.4
 - Size: S
-- Status: Not Started
+- Status: Completed (Sprint 7, 2026-04-02)
 - Tasks:
-  - Render event labels above or beside event markers
-  - Truncate long labels and add ellipsis
-  - Handle label overlap (hide some labels based on zoom level)
-  - Show full label on hover (tooltip)
-  - Style labels with CSS
-  - Write tests for label rendering
+  - ✅ Render event IDs above event bars (monospace, bold)
+  - ✅ Render event descriptions below event bars
+  - ✅ Truncate long labels and add ellipsis (IDs: 18 chars, descriptions: 25 chars)
+  - ✅ Show full label on hover (tooltip implemented in P3.7)
+  - ✅ Style labels with CSS
+  - ⚠️ Handle label overlap based on zoom level (deferred to future sprint)
 
 **P3.7: Implement hover tooltips**
 - Description: Show event details on hover
 - Dependencies: P3.4
 - Size: M
-- Status: Not Started
+- Status: Completed (Sprint 7, 2026-04-02)
 - Tasks:
-  - Create tooltip component (HTML overlay or SVG)
-  - Show event description, date range, tags, source on hover
-  - Position tooltip near cursor
-  - Handle edge cases (tooltip goes off screen)
-  - Style tooltip with CSS
-  - Add smooth fade-in/fade-out animations
-  - Write tests for tooltip behavior
+  - ✅ Create tooltip component (Tooltip.svelte, 236 lines)
+  - ✅ Show event ID, description, date range, tags, properties on hover
+  - ✅ Position tooltip near cursor with intelligent adjustment
+  - ✅ Handle edge cases (tooltip flips to stay on-screen)
+  - ✅ Style tooltip with CSS for light and dark modes
+  - ✅ Add smooth fade-in animation (0.15s ease-out)
+  - ⚠️ Write tests for tooltip behavior (deferred to P3.14)
 
 **P3.8: Visual indicators for anchored vs. unanchored events**
 - Description: Distinguish events with absolute dates from relative-only events
@@ -756,27 +756,29 @@ Each task includes:
 - Description: Parse solved timeline JSON and render it
 - Dependencies: P3.1, P3.4
 - Size: M
-- Status: Not Started
+- Status: Completed (Sprint 7, 2026-04-02)
 - Tasks:
-  - Create data loader to read JSON from file or API
-  - Parse JSON into internal data structures
-  - Validate JSON structure (use schema from P1.18)
-  - Handle loading errors gracefully
-  - Show loading state while data is being fetched
-  - Write tests for data loading and parsing
+  - ✅ Create data loader (fileLoader.ts, 141 lines)
+  - ✅ Parse JSON into internal data structures
+  - ✅ Validate JSON structure with comprehensive type guards
+  - ✅ Handle loading errors gracefully with error panel
+  - ✅ Show loading state with spinner while data is being fetched
+  - ⚠️ Write tests for data loading and parsing (deferred to P3.14)
 
 **P3.13: Support drag-and-drop file loading**
 - Description: Allow user to drag `.tl` or `.json` files onto page
 - Dependencies: P3.12
 - Size: S
-- Status: Not Started
+- Status: Completed (Sprint 7, 2026-04-02)
 - Tasks:
-  - Add drag-and-drop event handlers
-  - Read file content from dropped file
-  - Parse `.tl` files (using parser from Phase 1)
-  - Parse `.json` files (solved timeline)
-  - Show error if file format is invalid
-  - Write tests for file loading
+  - ✅ Add drag-and-drop event handlers (drop, dragover, dragleave)
+  - ✅ Read file content from dropped file (File.text() API)
+  - ✅ Parse `.json` files (solved timeline with validation)
+  - ✅ Show error if file format is invalid (file extension + JSON validation)
+  - ✅ Visual feedback during drag (border color change)
+  - ✅ File input button for accessibility alternative
+  - ⚠️ Parse `.tl` files (deferred - requires parser integration)
+  - ⚠️ Write tests for file loading (deferred to P3.14)
 
 ### Testing & Documentation
 

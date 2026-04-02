@@ -6,6 +6,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Sprint 7 — 2026-04-02
+
+#### Added
+- Interactive hover tooltips (P3.7)
+  - Tooltip.svelte component (236 lines) displays comprehensive event details
+  - Shows event ID, description, date range, tags, and properties
+  - Intelligent positioning that adjusts to stay on-screen
+  - Smooth fade-in animation (0.15s ease-out)
+  - Support for both light and dark color schemes
+  - Color-coded information (blue IDs, yellow property keys, green values)
+- Complete file loading infrastructure (P3.12, P3.13)
+  - fileLoader.ts module (141 lines) with comprehensive validation
+  - Type guards for TimePoint, TimeRange, TimelineEvent, TimelineMetadata
+  - Deep JSON structure validation ensures data integrity
+  - Drag-and-drop interface for timeline JSON files
+  - File input button for accessibility
+  - Loading spinner during file processing
+  - Error handling with user-friendly messages
+  - "Load Different File" button to switch timelines
+  - File extension validation (.json required)
+- Enhanced event labels (P3.6)
+  - Event IDs displayed above bars (monospace, bold font)
+  - Event descriptions shown below bars
+  - Label truncation with ellipsis (IDs: 18 chars, descriptions: 25 chars)
+  - Full details available via tooltips
+  - Improved visual hierarchy
+- Sprint documentation
+  - Comprehensive Sprint Letter 07 (docs/SPRINT_LETTER_07.md)
+  - Technical decisions documented
+  - Test results and build metrics
+
+#### Changed
+- App.svelte completely refactored (256 lines, +322/-75)
+  - Removed hardcoded sample data
+  - Three-state UI flow: empty → loading → loaded
+  - Professional error panel with retry capability
+  - Displays timeline metadata (title/description)
+- Timeline.svelte enhancements
+  - Integrated tooltip hover handlers
+  - Added label truncation helper function
+  - Updated label positioning and styling
+
+#### Fixed
+- Label overflow issues with truncation logic
+- CSS media query syntax error during build
+
+#### Technical
+- Bundle size: 113.73 KB (40.86 KB gzipped), +10.84 KB from Sprint 6
+- Build time: ~608ms
+- All features tested manually with sample timeline
+- 4 atomic commits with co-authorship
+- Test coverage for new features deferred to P3.14
+
 ### Sprint 4 — 2026-03-15
 
 #### Added
