@@ -4,6 +4,7 @@
   import type { TimelineData, TimelineEvent } from './types';
   import { timePointToYear } from './timeUtils';
   import Tooltip from './Tooltip.svelte';
+  import DetailPanel from './DetailPanel.svelte';
 
   export let data: TimelineData;
 
@@ -12,6 +13,9 @@
   let tooltipX = 0;
   let tooltipY = 0;
   let tooltipVisible = false;
+
+  // Selection state
+  let selectedEvent: TimelineEvent | null = null;
 
   let svgElement: SVGSVGElement;
   let width = 1000;
@@ -37,13 +41,39 @@
 
   // Create zoom behavior
   let currentZoom = d3.zoomIdentity;
+  let zoomBehavior: d3.ZoomBehavior<SVGSVGElement, unknown>;
+
+  // Zoom level as percentage
+  $: zoomLevel = Math.round(currentZoom.k * 100);
+
+  // Zoom control functions
+  function zoomIn() {
+    if (svgElement && zoomBehavior) {
+      const svg = d3.select(svgElement);
+      svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.3);
+    }
+  }
+
+  function zoomOut() {
+    if (svgElement && zoomBehavior) {
+      const svg = d3.select(svgElement);
+      svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.7);
+    }
+  }
+
+  function resetZoom() {
+    if (svgElement && zoomBehavior) {
+      const svg = d3.select(svgElement);
+      svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
+    }
+  }
 
   onMount(() => {
     const svg = d3.select(svgElement);
     const container = svg.select('.zoom-container');
 
     // Zoom behavior
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
+    zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 10])
       .translateExtent([[0, 0], [innerWidth, innerHeight]])
       .on('zoom', (event) => {
@@ -51,7 +81,7 @@
         container.attr('transform', event.transform);
       });
 
-    svg.call(zoom);
+    svg.call(zoomBehavior);
 
     // Update size on window resize
     const handleResize = () => {
@@ -119,7 +149,52 @@
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '…';
   }
+
+  // Selection handlers
+  function handleEventClick(event: TimelineEvent, mouseEvent: MouseEvent) {
+    mouseEvent.stopPropagation();
+    // Toggle selection: if clicking the same event, deselect it
+    if (selectedEvent?.id === event.id) {
+      selectedEvent = null;
+    } else {
+      selectedEvent = event;
+    }
+  }
+
+  function handleEventKeyPress(event: TimelineEvent, keyEvent: KeyboardEvent) {
+    if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
+      keyEvent.preventDefault();
+      // Toggle selection
+      if (selectedEvent?.id === event.id) {
+        selectedEvent = null;
+      } else {
+        selectedEvent = event;
+      }
+    }
+  }
+
+  function handleBackgroundClick() {
+    selectedEvent = null;
+  }
+
+  function handleCloseDetail() {
+    selectedEvent = null;
+  }
+
+  // Keyboard handler for ESC key
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Escape' && selectedEvent) {
+      selectedEvent = null;
+    }
+  }
+
+  // Check if an event is selected
+  function isSelected(event: TimelineEvent): boolean {
+    return selectedEvent?.id === event.id;
+  }
 </script>
+
+<svelte:window on:keydown={handleKeyDown} />
 
 <div class="timeline-container">
   <div class="timeline-header">
@@ -129,7 +204,20 @@
     {/if}
   </div>
 
-  <svg bind:this={svgElement} {width} {height} class="timeline-svg">
+  <svg
+    bind:this={svgElement}
+    {width}
+    {height}
+    class="timeline-svg"
+    role="application"
+    aria-label="Interactive timeline visualization"
+    on:click={handleBackgroundClick}
+    on:keydown={(e) => {
+      if (e.key === 'Escape') {
+        handleBackgroundClick();
+      }
+    }}
+  >
     <g transform="translate({margin.left},{margin.top})">
       <g class="zoom-container">
         <!-- X-axis -->
@@ -157,21 +245,41 @@
           {@const x = getEventX(event)}
           {@const eventWidth = getEventWidth(event)}
           {@const y = getEventY(i)}
+          {@const isPointEvent = eventWidth <= 3}
 
           <g class="event-group" transform="translate({x},{y})">
-            <!-- Event range bar -->
+            <!-- Uncertainty region (semi-transparent background) - taller to show uncertainty -->
+            {#if !isPointEvent}
+              <rect
+                width={eventWidth}
+                height="28"
+                y="-4"
+                fill={event.isAnchored ? '#3b82f6' : '#94a3b8'}
+                fill-opacity="0.15"
+                rx="4"
+                class="uncertainty-bar"
+                pointer-events="none"
+              />
+            {/if}
+
+            <!-- Event range bar (solid, narrower) -->
             <rect
               width={eventWidth}
               height="20"
               fill={event.isAnchored ? '#3b82f6' : '#94a3b8'}
+              fill-opacity={isPointEvent ? "1" : "0.85"}
               rx="3"
               class="event-bar"
+              class:selected={isSelected(event)}
               role="button"
               tabindex="0"
               aria-label="Event: {event.description}"
+              aria-pressed={isSelected(event)}
               on:mouseenter={(e) => handleMouseEnter(event, e)}
               on:mousemove={handleMouseMove}
               on:mouseleave={handleMouseLeave}
+              on:click={(e) => handleEventClick(event, e)}
+              on:keypress={(e) => handleEventKeyPress(event, e)}
             />
 
             <!-- Event ID label (above bar) -->
@@ -232,6 +340,20 @@
   visible={tooltipVisible}
 />
 
+<DetailPanel
+  event={selectedEvent}
+  onClose={handleCloseDetail}
+/>
+
+<ZoomControls
+  {zoomLevel}
+  onZoomIn={zoomIn}
+  onZoomOut={zoomOut}
+  onReset={resetZoom}
+/>
+
+<Legend />
+
 <style>
   .timeline-container {
     width: 100%;
@@ -259,13 +381,23 @@
     text-align: center;
   }
 
+  .uncertainty-bar {
+    user-select: none;
+  }
+
   .event-bar {
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
   }
 
   .event-bar:hover {
     opacity: 0.8;
+  }
+
+  .event-bar.selected {
+    stroke: #1e40af;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
   }
 
   .event-id-label {
