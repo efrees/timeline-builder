@@ -5,6 +5,8 @@
   import { timePointToYear } from './timeUtils';
   import Tooltip from './Tooltip.svelte';
   import DetailPanel from './DetailPanel.svelte';
+  import ZoomControls from './ZoomControls.svelte';
+  import Legend from './Legend.svelte';
 
   export let data: TimelineData;
 

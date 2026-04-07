@@ -6,6 +6,95 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Sprint 8 — 2026-04-07
+
+#### Added
+- Event click selection with detail panel (P3.10)
+  - DetailPanel.svelte component (349 lines) displays comprehensive event information
+  - Fixed position: right side on desktop, bottom sheet on mobile (<768px)
+  - Shows event ID, description, date range, status badge, tags, and properties
+  - Toggle selection by clicking event (click again to deselect)
+  - Close with background click, close button, or ESC key
+  - Smooth slide-in animation (0.2s ease-out)
+  - Dark mode support with adjusted colors
+  - Keyboard accessible (Enter/Space to select, ESC to close)
+  - Selected events show blue stroke (3px) and drop shadow with glow
+  - ARIA attributes for accessibility (aria-pressed, aria-label)
+- Uncertainty visualization with layered graphics (P3.5)
+  - Semi-transparent "halo" region (28px tall, 15% opacity) around event bars
+  - Shows date range uncertainty through subtle background extension
+  - Halo extends 4px above and below main event bar (20px tall)
+  - Range events (>= 3px wide) show 85% opacity, point events 100%
+  - Uses same color as event (blue for anchored, gray for unanchored)
+  - Halo has `pointer-events: none` so clicks pass through
+  - Works at all zoom levels, scales proportionally
+- Visual indicators for event types (P3.8)
+  - Color scheme: Blue (#3b82f6) for anchored, Gray (#94a3b8) for unanchored
+  - Legend.svelte component (100 lines) explains color coding
+  - Legend positioned below timeline with responsive layout
+  - Shows color indicators (32x16px rectangles) with descriptive labels
+  - "Anchored: Events with direct date evidence"
+  - "Unanchored: Events with computed/relative dates only"
+  - Responsive: vertical on mobile (<768px), horizontal on desktop
+  - Dark mode support
+- Zoom and pan UI controls (P3.9)
+  - ZoomControls.svelte component (162 lines) with interactive buttons
+  - Fixed position: top-right on desktop, bottom-right on mobile (<640px)
+  - Three buttons: Zoom In (+), Zoom Out (-), Reset
+  - Displays current zoom level as percentage (e.g., "100%", "130%")
+  - Custom SVG icons for +/- buttons (16x16px)
+  - Smooth transitions: 300ms for zoom, 500ms for reset
+  - Zoom In scales by 1.3x, Zoom Out by 0.7x
+  - Integrates with existing D3 zoom behavior (scroll-to-zoom, drag-to-pan)
+  - ARIA labels and keyboard accessible (Tab, Enter/Space)
+  - Mobile: hides reset button to save space
+- Global keyboard navigation
+  - ESC key: Close detail panel, deselect event
+  - Enter/Space on event: Toggle selection
+  - Tab: Navigate between events (role="button", tabindex="0")
+  - Focus indicators with blue outline
+- Sprint documentation
+  - Comprehensive Sprint Letter 08 (docs/SPRINT_LETTER_08.md)
+  - 4 features documented with technical decisions
+  - Test results and build metrics
+  - Known limitations and next steps
+
+#### Changed
+- Timeline.svelte enhancements (+175 lines)
+  - Added selection state management (`selectedEvent`)
+  - Added click and keyboard handlers for event selection
+  - Added background click handler for deselection
+  - Added global ESC key handler on window
+  - Integrated DetailPanel, Legend, and ZoomControls components
+  - Added zoom control functions (zoomIn, zoomOut, resetZoom)
+  - Added uncertainty halo rendering logic
+  - Added selected event visual feedback (stroke, shadow)
+  - Stored zoomBehavior reference for programmatic control
+  - Computed zoom level reactively from currentZoom.k
+- Event rendering
+  - Event bars now render with layered uncertainty halos
+  - Opacity varies by event type (85% for ranges, 100% for points)
+  - Added selected state styling (blue stroke, glow effect)
+  - Click and keyboard event handlers on all events
+  - ARIA attributes updated (aria-pressed for selection state)
+
+#### Fixed
+- Missing imports for ZoomControls and Legend in Timeline.svelte
+  - Added proper import statements for all components
+  - Build now succeeds with clean module resolution
+  - No functional changes, improves code quality
+
+#### Technical
+- Bundle size: 120.08 KB (42.33 KB gzipped), +6.35 KB from Sprint 7 (+5.6%)
+- Build time: 942ms
+- New components: DetailPanel (349 lines), Legend (100 lines), ZoomControls (162 lines)
+- Total new code: ~786 lines (611 new files + 175 modifications)
+- All features tested manually with constraint-demo timeline
+- 2 feature commits + 1 import fix commit with co-authorship
+- Test coverage for new features deferred to P3.14
+- Bundle remains under 50KB gzipped (modern best practice threshold)
+- Minor a11y warning about SVG event listeners (acceptable for interactive viz)
+
 ### Sprint 7 — 2026-04-02
 
 #### Added
